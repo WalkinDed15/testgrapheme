@@ -1,0 +1,12 @@
+@mixin row ($margin: 15px) {
+    margin-right: -$margin;
+    margin-left: -$margin;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@mixin col ($count, $margin: 15px, $grid-size: 12) {
+    width: calc(100% / #{$grid-size} * #{$count} - #{$margin} * 2);
+    margin-left: $margin;
+    margin-right: $margin;
+}
