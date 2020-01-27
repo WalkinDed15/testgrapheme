@@ -8,20 +8,20 @@
                 :validator="gv.formData.fio"
                 fieldName="fio"
                 placeholder="ФИО"
-                v-model="formData.fio"
+                v-model="fio"
             />
             <div class="window__label window__label_margin">Адрес</div>
             <inputComponent
                 :validator="gv.formData.city"
                 fieldName="city"
                 placeholder="Город"
-                v-model="formData.city"
+                v-model="city"
             />
             <inputComponent
                 :validator="gv.formData.adress"
                 fieldName="adress"
                 placeholder="Адрес"
-                v-model="formData.adress"
+                v-model="adress"
             />
             <div class="window__row">
                 <div class="window__col_left">
@@ -30,7 +30,7 @@
                         fieldName="country"
                         placeholder="Страна"
                         inputTag="select"
-                        v-model="formData.country"
+                        v-model="country"
                     >
                     <template #selectOptions>
                         <option value="" disabled selected>Страна</option>
@@ -44,11 +44,11 @@
                         fieldName="index"
                         placeholder="Индекс"
                         mask="999999"
-                        v-model="formData.index"
+                        v-model="index"
                 />
                 </div>
             </div>
-            <button class="window__button" :class="{ 'window__button_disabled' : this.gv.$invalid }" type="button" @click="next()" :disabled="this.gv.$invalid">
+            <button class="window__button" :class="{ 'window__button_disabled' : this.gv.formData.$invalid }" type="button" @click="next()" :disabled="this.gv.formData.$invalid">
                 Продолжить
             </button>
         </div>
@@ -59,14 +59,11 @@
     import breadCrumbs from '@/components/breadCrumbs'
     import inputComponent from '@/components/inputComponent'
     import { validationMixin } from 'vuelidate'
-    import { mapActions, mapGetters } from 'vuex'
+    import { mapFields } from 'vuex-map-fields'
     export default {
         name: 'info',
         mixins: [validationMixin],
         props: ['gv'],
-        created () {
-            this.setDataFromVuex()
-        },
         data () {
             return {
                 selectOptions: [
@@ -82,14 +79,7 @@
                         value: 'France',
                         text: 'Франция'
                     }
-                ],
-                formData: {
-                    fio: null,
-                    city: null,
-                    adress: null,
-                    country: null,
-                    index: null
-                }
+                ]
             }
         },
         components: {
@@ -97,22 +87,17 @@
             inputComponent
         },
         computed: {
-            ...mapGetters({
-                vuexFormData: 'formData'
-            })
+            ...mapFields([
+                'formData.fio',
+                'formData.city',
+                'formData.adress',
+                'formData.country',
+                'formData.index'
+            ])
         },
         methods: {
-            ...mapActions([
-                'setFormData'
-            ]),
-            setDataFromVuex () {
-                if (Object.keys(this.vuexFormData).length) {
-                    this.formData = this.vuexFormData
-                }
-            },
             next () {
                 if (!this.gv.formData.$invalid) {
-                    this.setFormData(this.formData)
                     this.$router.push({ path: '/pay' })
                 }
             }

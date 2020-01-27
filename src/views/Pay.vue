@@ -8,7 +8,7 @@
                 :validator="gv.cardData.name"
                 fieldName="name"
                 placeholder="Konstantin Ivanov"
-                v-model="cardData.name"
+                v-model="name"
             />
             <div class="window__label window__label_margin">Номер карты</div>
             <inputComponent
@@ -16,7 +16,7 @@
                 fieldName="cardNumber"
                 placeholder="XXXX XXXX XXXX XXXX XXXX"
                 mask="9999 9999 9999 9999 9999"
-                v-model="cardData.cardNumber"
+                v-model="cardNumber"
             />
             <div class="window__row window__row_margin">
                 <div class="window__col_left">
@@ -26,7 +26,7 @@
                         fieldName="period"
                         placeholder="MM / YY"
                         mask="99 / 99"
-                        v-model="cardData.period"
+                        v-model="period"
                     />
                 </div>
                 <div class="window__col_right">
@@ -36,11 +36,11 @@
                         fieldName="cvv"
                         placeholder="CVV"
                         mask="999"
-                        v-model="cardData.cvv"
+                        v-model="cvv"
                     />
                 </div>
             </div>
-            <button class="window__button" :class="{ 'window__button_disabled' : this.gv.$invalid }" type="button" @click="send()">
+            <button class="window__button" :class="{ 'window__button_disabled' : this.gv.cardData.$invalid }" type="button" @click="send()" :disabled="this.gv.cardData.$invalid">
                 Оплатить
             </button>
             <div class="window__overlay" v-if="loading">
@@ -55,25 +55,27 @@
     import inputComponent from '@/components/inputComponent'
     import { validationMixin } from 'vuelidate'
     import { mapActions } from 'vuex'
+    import { mapFields } from 'vuex-map-fields'
     export default {
         name: 'pay',
         mixins: [validationMixin],
         props: ['gv'],
         data () {
             return {
-                cardData: {
-                    name: null,
-                    cardNumber: null,
-                    period: null,
-                    cvv: null
-                },
                 loading: false
-
             }
         },
         components: {
             breadCrumbs,
             inputComponent
+        },
+        computed: {
+            ...mapFields([
+                'cardData.name',
+                'cardData.cardNumber',
+                'cardData.period',
+                'cardData.cvv'
+            ])
         },
         methods: {
             ...mapActions([

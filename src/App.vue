@@ -5,15 +5,13 @@
                 <router-view :gv="$v"/>
             </div>
         </div>
-        <pre>
-            {{ $v.validationGroup }}
-        </pre>
     </div>
 </template>
 
 <script>
     import { validationMixin } from 'vuelidate'
     import { required, helpers } from 'vuelidate/lib/validators'
+    import { mapGetters } from 'vuex'
     const en = helpers.withParams({ type: 'en' }, function (value) {
         return !helpers.req(value) || /^([A-Za-z\-\s]+)$/g.test(value)
     })
@@ -26,6 +24,12 @@
     const index = helpers.regex('index', /^([0-9]{6})$/)
     export default {
         mixins: [validationMixin],
+        computed: {
+            ...mapGetters([
+                'formData',
+                'cardData'
+            ])
+        },
         validations () {
             return {
                 formData: {

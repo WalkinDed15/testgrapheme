@@ -1,26 +1,42 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { getField, updateField } from 'vuex-map-fields'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
         formData: {
+            fio: null,
+            city: null,
+            adress: null,
+            country: null,
+            index: null
         },
-        validMap: {
-            info: false
+        cardData: {
+            name: null,
+            cardNumber: null,
+            period: null,
+            cvv: null
         }
     },
     getters: {
+        getField,
         formData (state) {
             return state.formData
+        },
+        cardData (state) {
+            return state.cardData
         }
     },
     mutations: {
-        setFormData (state, payload) {
-            for (let key in payload) {
-                Vue.set(state.formData, key, payload[key])
-                state.validMap.info = true
+        updateField,
+        clearData (state) {
+            for (let key in state.formData) {
+                state.formData[key] = null
+            }
+            for (let key in state.cardData) {
+                state.cardData[key] = null
             }
         }
     },
@@ -28,11 +44,13 @@ export default new Vuex.Store({
         setFormData ({ commit }, payload) {
             commit('setFormData', payload)
         },
-        payApi () {
+        payApi ({ commit }) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve('done')
                 }, 1000)
+            }).then(() => {
+                commit('clearData')
             })
         }
     },
